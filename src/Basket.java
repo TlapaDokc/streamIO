@@ -1,7 +1,8 @@
 import java.io.*;
+import java.rmi.RemoteException;
 import java.util.Scanner;
 
-public class Basket {
+public class Basket implements Serializable {
     private String[] products;
     private int[] prices;
     private boolean[] isFilled;
@@ -50,41 +51,21 @@ public class Basket {
         }
     }
 
-    public void saveTxt(File basketTextFile) throws IOException {
-        try (PrintWriter out = new PrintWriter(basketTextFile);) {
-            for (int i : userBasket)
-                out.print(i + " ");
-            out.println();
-            for (String i : products)
-                out.print(i + " ");
-            out.println();
-            for (int i : prices)
-                out.print(i + " ");
+    public void saveBin(File file) throws IOException {
+        try (FileOutputStream fos = new FileOutputStream(file);
+             ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+            oos.writeObject(this);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Basket loadFromTxtFile(File textFile) throws FileNotFoundException {
-        Scanner sc = new Scanner(textFile);
-        String[] strUserBasket = sc.nextLine().split(" ");
-        int[] scUserBasket = new int[strUserBasket.length];
-        for (int i = 0; i < strUserBasket.length; i++) {
-            scUserBasket[i] = Integer.parseInt(strUserBasket[i]);
+    public static Basket loadFromBinFile(File file) throws IOException, ClassNotFoundException {
+        try (FileInputStream fis = new FileInputStream(file);
+             ObjectInputStream ois = new ObjectInputStream(fis)) {
+            return (Basket) ois.readObject();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        boolean[] scIsFilled = new boolean[scUserBasket.length];
-        for (int i = 0; i < scUserBasket.length; i++) {
-            if (scUserBasket[i] > 0) {
-                scIsFilled[i] = true;
-            }
-        }
-        String[] scProducts = sc.nextLine().split(" ");
-        String[] strPrices = sc.nextLine().split(" ");
-        sc.close();
-        int[] scPrices = new int[strPrices.length];
-        for (int i = 0; i < strPrices.length; i++) {
-            scPrices[i] = Integer.parseInt(strPrices[i]);
-        }
-        return new Basket(scPrices, scProducts, scIsFilled, scUserBasket);
     }
 }
