@@ -5,8 +5,8 @@ public class Basket {
     private String[] products;
     private int[] prices;
     private boolean[] isFilled;
-    public int[] userBasket;
-    int totalsum = 0;
+    private int[] userBasket;
+    private int totalsum = 0;
 
     public Basket(int[] prices, String[] products) {
         this.prices = prices;
@@ -50,24 +50,35 @@ public class Basket {
         }
     }
 
-    public void saveTxt(File basketTextFile) throws IOException {
+    public void saveTxt(File basketTextFile) {
         try (PrintWriter out = new PrintWriter(basketTextFile);) {
-            for (int i : userBasket)
+            for (int i : userBasket) {
                 out.print(i + " ");
+            }
             out.println();
-            for (String i : products)
+            for (String i : products) {
                 out.print(i + " ");
+            }
             out.println();
-            for (int i : prices)
+            for (int i : prices) {
                 out.print(i + " ");
+            }
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static Basket loadFromTxtFile(File textFile) throws FileNotFoundException {
-        Scanner sc = new Scanner(textFile);
-        String[] strUserBasket = sc.nextLine().split(" ");
+    public static Basket loadFromTxtFile(File basketTextFile) {
+        String[] strUserBasket;
+        String[] scProducts;
+        String[] strPrices;
+        try (Scanner sc = new Scanner(basketTextFile)) {
+            strUserBasket = sc.nextLine().split(" ");
+            scProducts = sc.nextLine().split(" ");
+            strPrices = sc.nextLine().split(" ");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         int[] scUserBasket = new int[strUserBasket.length];
         for (int i = 0; i < strUserBasket.length; i++) {
             scUserBasket[i] = Integer.parseInt(strUserBasket[i]);
@@ -78,9 +89,6 @@ public class Basket {
                 scIsFilled[i] = true;
             }
         }
-        String[] scProducts = sc.nextLine().split(" ");
-        String[] strPrices = sc.nextLine().split(" ");
-        sc.close();
         int[] scPrices = new int[strPrices.length];
         for (int i = 0; i < strPrices.length; i++) {
             scPrices[i] = Integer.parseInt(strPrices[i]);
