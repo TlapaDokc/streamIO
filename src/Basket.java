@@ -6,8 +6,8 @@ public class Basket implements Serializable {
     private String[] products;
     private int[] prices;
     private boolean[] isFilled;
-    public int[] userBasket;
-    int totalsum = 0;
+    private int[] userBasket;
+    private int totalsum = 0;
 
     public Basket(int[] prices, String[] products) {
         this.prices = prices;
