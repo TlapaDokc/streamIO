@@ -1,4 +1,6 @@
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Scanner;
 
 public class Basket {
@@ -7,6 +9,9 @@ public class Basket {
     private boolean[] isFilled;
     private int[] userBasket;
     private int totalsum = 0;
+
+    public Basket() {
+    }
 
     public Basket(int[] prices, String[] products) {
         this.prices = prices;
@@ -30,6 +35,14 @@ public class Basket {
         return products;
     }
 
+    public boolean[] getIsFilled() {
+        return isFilled;
+    }
+
+    public int[] getUserBasket() {
+        return userBasket;
+    }
+
     public int getTotalsum() {
         return totalsum;
     }
@@ -50,8 +63,8 @@ public class Basket {
         }
     }
 
-    public void saveTxt(File basketTextFile) {
-        try (PrintWriter out = new PrintWriter(basketTextFile);) {
+    public void saveTxt(File textFile) {
+        try (PrintWriter out = new PrintWriter(textFile);) {
             for (int i : userBasket) {
                 out.print(i + " ");
             }
@@ -68,11 +81,11 @@ public class Basket {
         }
     }
 
-    public static Basket loadFromTxtFile(File basketTextFile) {
+    public static Basket loadFromTxtFile(File textFile) {
         String[] strUserBasket;
         String[] scProducts;
         String[] strPrices;
-        try (Scanner sc = new Scanner(basketTextFile)) {
+        try (Scanner sc = new Scanner(textFile)) {
             strUserBasket = sc.nextLine().split(" ");
             scProducts = sc.nextLine().split(" ");
             strPrices = sc.nextLine().split(" ");
