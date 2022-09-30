@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<root>
+    <config>
+        <load>
+            <enabled basketLoadEnable="true"/>
+            <fileName basketLoadFileName="basket"/>
+            <format basketLoadFormat="text"/>
+        </load>
+
+        <save>
+            <enabled basketSaveEnable="true"/>
+            <fileName basketSaveFileName="basket"/>
+            <format basketSaveFormat="text"/>
+        </save>
+
+        <log>
+            <enabled logEnable="true"/>
+            <fileName logFileName="client.csv"/>
+        </log>
+    </config>
+</root>

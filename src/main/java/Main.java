@@ -6,21 +6,26 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        File TextFile = new File("basket.txt");
         File jsonFile = new File("basket.json");
+        File textFile = new File("basket.text");
         File csvFile = new File("log.csv");
+        Settings settings = new Settings();
+        settings.getConfig();
+        File fileSave = settings.getFileSave();
         ClientLog logs = new ClientLog();
-        Basket basket;
-        if (TextFile.exists()) {
-            basket = Basket.loadFromTxtFile(TextFile);
-        } else if (jsonFile.exists()) {
+        Basket basket = null;
+        if (settings.getBasketLoadEnable() && settings.getBasketLoadFormat().equals("text") && textFile.exists()) {
+            basket = Basket.loadFromTxtFile(textFile);
+        }
+        if (settings.getBasketLoadEnable() && settings.getBasketLoadFormat().equals("json") && jsonFile.exists()) {
             ObjectMapper mapper = new ObjectMapper();
             try {
                 basket = mapper.readValue(jsonFile, Basket.class);
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
-        } else {
+        }
+        if (basket == null) {
             int[] prices = {12, 15, 7, 9, 11};
             String[] products = {"Молоко", "Яйца", "Хлеб", "Картофель", "Гречневая крупа"};
             basket = new Basket(prices, products);
@@ -60,14 +65,20 @@ public class Main {
         System.out.println("Ваша корзина:");
         basket.printCart();
         System.out.println("Итог " + basket.getTotalsum() + " руб");
-        ObjectMapper mapper = new ObjectMapper();
-        try {
-            mapper.writeValue(jsonFile, basket);
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        // basket.saveTxt(textFile);
-        logs.exportAsCSV(csvFile);
+        if (settings.getBasketSaveEnable() && settings.getBasketSaveFormat().equals("json")) {
+            ObjectMapper mapper = new ObjectMapper();
 
+            try {
+                mapper.writeValue(fileSave, basket);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        if (settings.getBasketSaveEnable() && settings.getBasketSaveFormat().equals("text")) {
+            basket.saveTxt(fileSave);
+        }
+        if (settings.getLogEnable()) {
+            logs.exportAsCSV(csvFile);
+        }
     }
 }
